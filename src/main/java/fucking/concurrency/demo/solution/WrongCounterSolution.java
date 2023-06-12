@@ -45,7 +45,7 @@ public class WrongCounterSolution {
             for (int i = 0; i < INC_COUNT; ++i) {
                 //这里不能用counter.get() + 1来自增,因为这也是一个int的操作,不具有原子性
                 // counter.set(counter.get() + 1);
-                counter.addAndGet(1);
+                counter.incrementAndGet();
             }
         }
     }

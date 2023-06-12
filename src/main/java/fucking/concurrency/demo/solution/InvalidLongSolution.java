@@ -1,13 +1,12 @@
 package fucking.concurrency.demo.solution;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 /**
- * @author Jerry Lee(oldratlee at gmail dot com)
+ * todo 注意i=Integer.MAX_VALUE后的报错
+ *
+ * @see fucking.concurrency.demo.InvalidLongDemo
  */
 public class InvalidLongSolution {
-    //使用Atomic包装类,进行原子性读写
-    AtomicLong count = new AtomicLong(0);
+    volatile long count = 0L;
 
     @SuppressWarnings("InfiniteLoopStatement")
     public static void main(String[] args) {
@@ -20,7 +19,7 @@ public class InvalidLongSolution {
 
         for (int i = 0; ; i++) {
             @SuppressWarnings("UnnecessaryLocalVariable") final long l = i;
-            demo.count.set(l << 32 | l);
+            demo.count = l << 32 | l;
         }
     }
 
@@ -30,11 +29,10 @@ public class InvalidLongSolution {
 
     private class ConcurrencyCheckTask implements Runnable {
         @Override
-        @SuppressWarnings("InfiniteLoopStatement")
         public void run() {
             int c = 0;
             for (int i = 0; ; i++) {
-                long l = count.get();
+                long l = count;
                 long high = l >>> 32;
                 long low = l & 0xFFFFFFFFL;
                 if (high != low) {
